@@ -2,16 +2,19 @@ import API from "../api";
 import Actions from "./action.types";
 import Mutations from "./mutation.types";
 import router from "vue-router";
-
 import Vue from "vue";
 import Vuex from "vuex";
-Vue.use(Vuex);
+import socket from "../socket";
+import createWebSocketPlugin from "../socket/websocketStorePlugin";
 
+Vue.use(Vuex);
+const websocketPlugin = createWebSocketPlugin(socket);
 export default new Vuex.Store({
   state: {
     user: null,
     tasks: [],
     users: [],
+    view: "allTasks",
   },
   actions: {
     async [Actions.LOGIN](context, loginData) {
@@ -76,13 +79,44 @@ export default new Vuex.Store({
         console.log(error);
       }
     },
-    async [Actions.SEND_MESSAGE](context, data) {
-      try {
-        const res = await API.sendMessage(data.taskId, data.message);
-        console.log(res);
-      } catch (error) {
-        console.log(error);
-      }
+    // async [Actions.SEND_MESSAGE](context, data) {
+    //   try {
+    //     const res = await API.sendMessage(data.taskId, data.message);
+    //     console.log(res);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // },
+    [Actions.CHANGE_VIEW](context, view) {
+      context.commit(Mutations.CHANGE_VIEW, view);
+    },
+    // [Actions.SOCKET_CONNECT]({ commit, dispatch }) {
+    //   const socket = io("http://localhost:5050");
+    //   commit(Mutations.SET_SOCKET, socket);
+    //   dispatch(Actions.JOIN_ROOMS);
+    //   console.log(socket);
+    // },
+    [Actions.JOIN_ROOMS](context) {
+      console.log(
+        "connecting to socket rooms: ",
+        context.state.tasks,
+        context.state.user
+      );
+      this.$socket.emit("joinRooms", {
+        rooms: context.state.tasks.map((task) => task._id),
+        user: context.state.user,
+      });
+    },
+    [Actions.SEND_MESSAGE](context, { msg, taskId }) {
+      this.$socket.emit("message", {
+        msg,
+        user: context.state.user,
+        room: taskId,
+      });
+    },
+    [Actions.RECIEVE_MESSAGE]({ commit }, payload) {
+      console.log("recieved task from socket: ", payload);
+      commit(Mutations.UPDATE_MESSAGES, payload);
     },
   },
   mutations: {
@@ -95,6 +129,23 @@ export default new Vuex.Store({
     [Mutations.SET_USERS](state, users) {
       state.users = users;
     },
+    [Mutations.CHANGE_VIEW](state, view) {
+      state.view = view;
+    },
+    [Mutations.SET_SOCKET](state, socket) {
+      state.socket = socket;
+    },
+    [Mutations.UPDATE_MESSAGES](state, payload) {
+      // Replace the whole task with the new one
+      // const index = state.tasks.findIndex(task => task._id == payload._id)
+      // state.tasks.splice(index, 1, payload)
+
+      // Replace messages of the task with the new messages
+      const task = state.tasks.find((task) => task._id == payload._id);
+      task.messages = payload.messages;
+
+      console.log("updated task messages: ", task);
+    },
   },
   getters: {
     clients(state) {
@@ -105,4 +156,5 @@ export default new Vuex.Store({
     },
   },
   modules: {},
+  plugins: [websocketPlugin],
 });

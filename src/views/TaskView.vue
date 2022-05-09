@@ -1,12 +1,18 @@
 <template>
-  <div>
-    <h3>
-      {{ task.title }}
-    </h3>
-    <form @submit.prevent="sendMsg">
-      <input type="text" v-model="msg" placeholder="Add your message" />
-      <button>SEND</button>
-    </form>
+  <v-container>
+    <v-row justify="center">
+      <h3>
+        {{ task.title }}
+      </h3>
+    </v-row>
+    <v-row justify="center" class="py-3">
+      <form @submit.prevent="sendMsg">
+        <input type="text" v-model="msg" placeholder="Add your message" />
+        <v-btn class="mx-1" type="submit">
+          <span>Send Message</span>
+        </v-btn>
+      </form>
+    </v-row>
     <ul>
       <li
         v-for="msg of task.messages"
@@ -16,7 +22,7 @@
         {{ msg.content }}
       </li>
     </ul>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -28,32 +34,10 @@ export default {
       msg: "",
     };
   },
-  //   computed: {
-  //     task() {
-  //       return this.$store.state.tasks.find(
-  //         (task) => task._id == this.$route.params.id
-  //       );
-  //     },
-  //   },
-  // sockets: {
-  //   connect: function () {
-  //     console.log("socket connected");
-  //   },
-  //   // listning to server emits
-  //   customEmit: function (data) {
-  //     console.log(
-  //       'this method was fired by the socket server. eg: io.emit("customEmit", data)',
-  //       data
-  //     );
-  //   },
-  // },
   methods: {
     sendMsg() {
-      // emitting message to server
-      // this.$socket.emit('emit_method', data)
-      const message = { content: this.msg };
       this.$store.dispatch(Actions.SEND_MESSAGE, {
-        message,
+        msg: this.msg,
         taskId: this.task._id,
       });
     },

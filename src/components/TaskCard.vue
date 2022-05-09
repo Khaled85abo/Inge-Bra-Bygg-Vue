@@ -60,9 +60,7 @@
     </v-card-text>
 
     <v-card-actions>
-      <v-btn color="deep-purple lighten-2" text @click="reserve">
-        Reserve
-      </v-btn>
+      <v-btn color="deep-purple lighten-2" text> Reserve </v-btn>
     </v-card-actions>
   </v-card>
 </template>

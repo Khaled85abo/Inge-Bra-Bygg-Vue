@@ -1,18 +1,11 @@
 <template>
   <v-app-bar
     absolute
-    color="#fcb69f"
-    dark
-    shrink-on-scroll
-    src="../assets/blocks.jpg"
-    scroll-target="#scrolling-techniques-2"
+    color="#BFBFBF"
+    elevate-on-scroll
+    scroll-target="#scrolling-techniques-7"
   >
-    <!-- <template v-slot:img="{ props }">
-      <v-img
-        v-bind="props"
-        gradient="to top right, rgba(19,84,122,.5), rgba(128,208,199,.8)"
-      ></v-img>
-    </template> -->
+    <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
     <v-img
       alt="Vuetify Logo"
       class="shrink mr-2"
@@ -21,16 +14,28 @@
       transition="scale-transition"
       width="40"
     />
-    <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
-
-    <v-app-bar-title>Inge bra bygg</v-app-bar-title>
+    <v-toolbar-title>Inge bra bygg</v-toolbar-title>
 
     <v-spacer></v-spacer>
-    <v-btn @click="navProfile">
+    <div v-if="user">
+      <v-btn class="mx-1" @click="changeView('allTasks')">
+        <span>All Tasks</span>
+      </v-btn>
+      <v-btn class="mx-1" @click="changeView('createTask')">
+        <span>Create Task</span>
+      </v-btn>
+      <v-btn class="mx-1">
+        <router-link to="/profile">Profile</router-link>
+        <v-icon>mdi-account-details</v-icon>
+      </v-btn>
+    </div>
+    <v-spacer></v-spacer>
+    <v-btn>
       <router-link v-if="!user" to="/login">Login</router-link>
-      <router-link v-else to="/profile">Profile</router-link>
+      <router-link v-else to="/">Logout</router-link>
       <v-icon>mdi-open-in-new</v-icon>
     </v-btn>
+
     <!-- <v-btn icon>
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
@@ -46,10 +51,15 @@
 </template>
 
 <script>
+import Actions from "../store/action.types";
+
 export default {
   methods: {
     navProfile() {
       this.$router.push("/profile");
+    },
+    changeView(view) {
+      this.$store.dispatch(Actions.CHANGE_VIEW, view);
     },
   },
   computed: {

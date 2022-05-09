@@ -6,7 +6,6 @@ const GET_TASK = "get-task";
 const DELETE_TASK = "delete-task";
 const UPDATE_TASK = "update-task";
 const CREATE_TASK = "create-task";
-const SEND_MESSAGE = "send-message";
 const GET_ALL_USERS = "get-all-users";
 const GET_USER = "get-user";
 const CREATE_USER = "create-user";
@@ -18,6 +17,15 @@ const UPDATE_USER = "update-user";
 
 const UPLOAD_IMAGE = "upload-image";
 
+// APP
+const CHANGE_VIEW = "change-view";
+
+// SOCKET IO
+
+const SOCKET_CONNECT = "socket-connect";
+const JOIN_ROOMS = "join-rooms";
+const SEND_MESSAGE = "send-message";
+const RECIEVE_MESSAGE = "recieve-message";
 export default {
   LOGIN,
   GET_ME,
@@ -25,7 +33,6 @@ export default {
   GET_TASK,
   DELETE_TASK,
   UPDATE_TASK,
-  SEND_MESSAGE,
   GET_ALL_USERS,
   GET_USER,
   CREATE_USER,
@@ -34,4 +41,9 @@ export default {
   UPDATE_USER_ROLE,
   CREATE_TASK,
   UPLOAD_IMAGE,
+  CHANGE_VIEW,
+  SOCKET_CONNECT,
+  JOIN_ROOMS,
+  SEND_MESSAGE,
+  RECIEVE_MESSAGE,
 };
