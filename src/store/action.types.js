@@ -19,7 +19,7 @@ const UPLOAD_IMAGE = "upload-image";
 
 // APP
 const CHANGE_VIEW = "change-view";
-
+const MESSAGE_SEEN = "message-seen";
 // SOCKET IO
 
 const SOCKET_CONNECT = "socket-connect";
@@ -46,4 +46,5 @@ export default {
   JOIN_ROOMS,
   SEND_MESSAGE,
   RECIEVE_MESSAGE,
+  MESSAGE_SEEN,
 };
