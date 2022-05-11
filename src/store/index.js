@@ -1,9 +1,9 @@
 import API from "../api";
 import Actions from "./action.types";
 import Mutations from "./mutation.types";
-import router from "vue-router";
 import Vue from "vue";
 import Vuex from "vuex";
+import router from "vue-router";
 import socket from "../socket";
 import createWebSocketPlugin from "../socket/websocketStorePlugin";
 
@@ -112,13 +112,18 @@ export default new Vuex.Store({
       console.log("recieved task from socket: ", payload);
       commit(Mutations.UPDATE_MESSAGES, payload);
     },
+    [Actions.MESSAGE_SEEN]({ commit }, taskId) {
+      commit(Mutations.SET_MESSAGE_SEEN, taskId);
+    },
   },
   mutations: {
     [Mutations.SET_USER](state, user) {
       state.user = user;
     },
     [Mutations.SET_TASKS](state, tasks) {
-      state.tasks = tasks.tasks;
+      state.tasks = tasks.tasks.map((task) => {
+        return { ...task, newMessage: false };
+      });
     },
     [Mutations.SET_USERS](state, users) {
       state.users = users;
@@ -136,10 +141,15 @@ export default new Vuex.Store({
 
       // Replace messages of the task with the new messages
       const task = state.tasks.find((task) => task._id == payload._id);
-      console.log(task)
-      // task.messages = payload.messages;
+      task.messages = payload.messages;
+      task.newMessage = true;
 
-      console.log("updated task messages: ", task);
+      // Reorder tasks to show the one with new messages first
+      state.tasks.sort((a, b) => Number(b.newMessage) - Number(a.newMessage));
+    },
+    [Mutations.SET_MESSAGE_SEEN](state, taskId) {
+      const index = state.tasks.findIndex((t) => t._id == taskId);
+      state.tasks[index].newMessage = false;
     },
   },
   getters: {
@@ -148,6 +158,9 @@ export default new Vuex.Store({
     },
     workers(state) {
       return state.users.filter((user) => user.role == "worker");
+    },
+    newMessages(state) {
+      return state.tasks.filter((task) => task.newMessage == true).length;
     },
   },
   modules: {},

@@ -5,5 +5,8 @@ export default function createWebSocketPlugin(socket) {
     socket.on("message", (payload) =>
       store.dispatch(Actions.RECIEVE_MESSAGE, payload)
     );
+    socket.on("activeUsers", (payload) =>
+      store.dispatch(Actions.RECIEVE_MESSAGE, payload)
+    );
   };
 }

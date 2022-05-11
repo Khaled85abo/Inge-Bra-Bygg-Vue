@@ -1,10 +1,5 @@
 <template>
-  <v-card
-    @click="goToTask"
-    :loading="loading"
-    class="mx-auto my-12"
-    max-width="374"
-  >
+  <v-card @click="goToTask" class="mx-auto my-12" max-width="374">
     <template slot="progress">
       <v-progress-linear
         color="deep-purple"
@@ -44,11 +39,7 @@
     <v-card-title>Tonight's availability</v-card-title>
 
     <v-card-text>
-      <v-chip-group
-        v-model="selection"
-        active-class="deep-purple accent-4 white--text"
-        column
-      >
+      <v-chip-group active-class="deep-purple accent-4 white--text" column>
         <v-chip>5:30PM</v-chip>
 
         <v-chip>7:30PM</v-chip>
@@ -60,7 +51,9 @@
     </v-card-text>
 
     <v-card-actions>
-      <v-btn color="deep-purple lighten-2" text> Reserve </v-btn>
+      <v-icon>mdi-email</v-icon>
+      <span class="font-weight-bold">{{ card.messages.length }}</span>
+      <span v-if="card.newMessage" class="new">New</span>
     </v-card-actions>
   </v-card>
 </template>
@@ -86,5 +79,13 @@ article {
   &:hover {
     background: lightgray;
   }
+}
+.new {
+  margin-left: 0.5rem;
+  font-size: 11px;
+  padding: 0.2rem 0.3rem;
+  border-radius: 999px;
+  color: gold;
+  background: darkblue;
 }
 </style>

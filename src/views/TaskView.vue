@@ -49,6 +49,12 @@ export default {
     this.task = theTask;
     console.log(this.task);
   },
+  mounted() {
+    this.$store.dispatch(Actions.MESSAGE_SEEN, this.$route.params.id);
+  },
+  beforeUpdate() {
+    this.$store.dispatch(Actions.MESSAGE_SEEN, this.$route.params.id);
+  },
   computed: {
     myInfo() {
       return this.$store.state.user;
