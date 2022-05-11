@@ -30,11 +30,12 @@
       </v-btn>
     </div>
     <v-spacer></v-spacer>
-    <v-btn>
-      <router-link v-if="!user" to="/login">Login</router-link>
-      <router-link v-else to="/">Logout</router-link>
-      <v-icon>mdi-open-in-new</v-icon>
-    </v-btn>
+    <div>
+      <v-btn v-if="!user">
+        <router-link to="/login">Login</router-link>
+      </v-btn>
+      <v-btn v-else @click="logout"> Logout </v-btn>
+    </div>
 
     <!-- <v-btn icon>
         <v-icon>mdi-magnify</v-icon>
@@ -60,6 +61,10 @@ export default {
     },
     changeView(view) {
       this.$store.dispatch(Actions.CHANGE_VIEW, view);
+    },
+    logout() {
+      this.$store.dispatch(Actions.LOGOUT);
+      this.$router.push("/login");
     },
   },
   computed: {

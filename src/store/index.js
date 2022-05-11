@@ -3,7 +3,7 @@ import Actions from "./action.types";
 import Mutations from "./mutation.types";
 import Vue from "vue";
 import Vuex from "vuex";
-import router from "vue-router";
+// import router from "vue-router";
 import socket from "../socket";
 import createWebSocketPlugin from "../socket/websocketStorePlugin";
 
@@ -27,7 +27,7 @@ export default new Vuex.Store({
           await context.dispatch(Actions.GET_ME);
           await context.dispatch(Actions.GET_TASKS);
           await context.dispatch(Actions.GET_ALL_USERS);
-          router.push("/profile");
+          // router.push("/profile");
         }
       } catch (error) {
         console.log(error.response.data.error);
@@ -76,14 +76,16 @@ export default new Vuex.Store({
         console.log(error);
       }
     },
-    // async [Actions.SEND_MESSAGE](context, data) {
-    //   try {
-    //     const res = await API.sendMessage(data.taskId, data.message);
-    //     console.log(res);
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // },
+    async [Actions.SEND_MESSAGE](context, data) {
+      const newMessage = { content: data.msg };
+      try {
+        const res = await API.sendMessage(data.taskId, newMessage);
+
+        console.log("response after sending message: ", res);
+      } catch (error) {
+        console.log(error);
+      }
+    },
     [Actions.CHANGE_VIEW](context, view) {
       context.commit(Mutations.CHANGE_VIEW, view);
     },
@@ -104,16 +106,18 @@ export default new Vuex.Store({
         user: context.state.user,
       });
     },
-    [Actions.SEND_MESSAGE](context, { msg, taskId }) {
-    API.sendMessage(taskId, msg)
 
-    },
     [Actions.RECIEVE_MESSAGE]({ commit }, payload) {
       console.log("recieved task from socket: ", payload);
       commit(Mutations.UPDATE_MESSAGES, payload);
     },
     [Actions.MESSAGE_SEEN]({ commit }, taskId) {
       commit(Mutations.SET_MESSAGE_SEEN, taskId);
+    },
+    [Actions.LOGOUT]({ commit }) {
+      console.log("Action logout");
+      API.deleteToken();
+      commit(Mutations.LOGOUT);
     },
   },
   mutations: {
@@ -150,6 +154,11 @@ export default new Vuex.Store({
     [Mutations.SET_MESSAGE_SEEN](state, taskId) {
       const index = state.tasks.findIndex((t) => t._id == taskId);
       state.tasks[index].newMessage = false;
+    },
+    [Mutations.LOGOUT](state) {
+      state.user = null;
+      state.tasks = [];
+      state.users = [];
     },
   },
   getters: {

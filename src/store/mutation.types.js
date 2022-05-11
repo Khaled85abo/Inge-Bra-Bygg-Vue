@@ -6,6 +6,7 @@ const SET_ROOMS = "set-rooms";
 const UPDATE_MESSAGES = "update-messages";
 const SET_MESSAGE_SEEN = "set-message-seen";
 // APP
+const LOGOUT = "logout";
 
 const CHANGE_VIEW = "change-view";
 export default {
@@ -17,4 +18,5 @@ export default {
   SET_ROOMS,
   UPDATE_MESSAGES,
   SET_MESSAGE_SEEN,
+  LOGOUT,
 };

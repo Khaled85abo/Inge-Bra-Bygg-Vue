@@ -5,10 +5,14 @@ const setToken = (token) => {
   axios.defaults.headers.common["Authorization"] = token;
 };
 
+const deleteToken = () => {
+  axios.defaults.headers.common["Authorization"] = "";
+};
+
 const login = (data) => axios.post("/user/auth", data);
 const getMe = () => axios.get("/user/me");
 const sendMessage = (taskId, message) =>
-axios.post(`/task/${taskId}/sendMessage`, message);
+  axios.post(`/task/${taskId}/sendMessage`, message);
 const getAllTasks = () => axios.get("/tasks/allTasks");
 const getAllUsers = () => axios.get("/user/all");
 const createTask = (task) => axios.post("/tasks/create", task);
@@ -23,4 +27,5 @@ export default {
   uploadImg,
   createTask,
   sendMessage,
+  deleteToken,
 };

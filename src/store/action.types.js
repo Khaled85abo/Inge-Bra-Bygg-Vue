@@ -20,6 +20,7 @@ const UPLOAD_IMAGE = "upload-image";
 // APP
 const CHANGE_VIEW = "change-view";
 const MESSAGE_SEEN = "message-seen";
+const LOGOUT = "logout";
 // SOCKET IO
 
 const SOCKET_CONNECT = "socket-connect";
@@ -47,4 +48,5 @@ export default {
   SEND_MESSAGE,
   RECIEVE_MESSAGE,
   MESSAGE_SEEN,
+  LOGOUT,
 };
