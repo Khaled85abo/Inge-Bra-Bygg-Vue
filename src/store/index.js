@@ -47,7 +47,6 @@ export default new Vuex.Store({
       try {
         const res = await API.getAllTasks();
         const data = res.data;
-        console.log("tasks from server: ", res);
         context.commit(Mutations.SET_TASKS, data);
         // Connect to task rooms
       } catch (error) {
@@ -57,7 +56,6 @@ export default new Vuex.Store({
     async [Actions.GET_ALL_USERS]({ commit }) {
       try {
         const res = await API.getAllUsers();
-        console.log("all users: ", res.data);
         commit(Mutations.SET_USERS, res.data.users);
       } catch (error) {
         console.log(error);
@@ -67,7 +65,6 @@ export default new Vuex.Store({
       try {
         const taskRes = await API.createTask(obj.task);
         const taskId = taskRes.data.task.id;
-        console.log("respons create task: ", taskRes);
         if (taskId) {
           const imgRes = await API.uploadImg(taskId, obj.img);
           console.log("response from uploading image: ", imgRes);
@@ -108,11 +105,8 @@ export default new Vuex.Store({
       });
     },
     [Actions.SEND_MESSAGE](context, { msg, taskId }) {
-      this.$socket.emit("message", {
-        msg,
-        user: context.state.user,
-        room: taskId,
-      });
+    API.sendMessage(taskId, msg)
+
     },
     [Actions.RECIEVE_MESSAGE]({ commit }, payload) {
       console.log("recieved task from socket: ", payload);
@@ -142,7 +136,8 @@ export default new Vuex.Store({
 
       // Replace messages of the task with the new messages
       const task = state.tasks.find((task) => task._id == payload._id);
-      task.messages = payload.messages;
+      console.log(task)
+      // task.messages = payload.messages;
 
       console.log("updated task messages: ", task);
     },
