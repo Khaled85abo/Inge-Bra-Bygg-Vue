@@ -16,6 +16,11 @@
           prepend-inner-icon="mdi-comment"
           v-model="task.description"
         ></v-textarea>
+        <v-btn class="mx-1" @click="getUserImg">Get Strem</v-btn>
+        <v-btn class="mx-1" @click="captureImage">Capture Image</v-btn>
+        <v-btn class="mx-1" @click="stopStream">Stop Streming</v-btn>
+        <video width="320" height="240" controls ref="videoScreen"></video>
+        <canvas ref="canvas" width="320" height="240"></canvas>
         <v-file-input
           ref="taskImg"
           counter
@@ -125,6 +130,8 @@ export default {
       5: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
     };
     return {
+      constraints: { audio: false, video: true },
+      stream: null,
       task: {
         title: "title",
         description: "description",
@@ -166,6 +173,38 @@ export default {
         img: formData,
         task: { ...this.task, imgPath },
       });
+    },
+    async getUserImg() {
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia(
+          this.constraints
+        );
+        this.$refs.videoScreen.srcObject = this.stream;
+        console.log("Getting stream: ", this.stream);
+      } catch (error) {
+        console.log("Error getting stream: ", error);
+      }
+    },
+    captureImage() {
+      this.$refs.canvas
+        .getContext("2d")
+        .drawImage(
+          this.$refs.videoScreen,
+          0,
+          0,
+          this.$refs.canvas.width,
+          this.$refs.canvas.height
+        );
+      let image_data_url = this.$refs.canvas.toDataURL("image/jpeg");
+      // data url of the image
+      console.log(image_data_url);
+    },
+    async stopStream() {
+      const tracks = this.stream.getTracks();
+      tracks.forEach(function (track) {
+        track.stop();
+      });
+      this.$refs.videoScreen.srcObject = null;
     },
     toggleWorker(id) {
       const index = this.task.workersID.indexOf(id);
